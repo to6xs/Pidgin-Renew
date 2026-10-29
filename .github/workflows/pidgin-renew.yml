@@ -41,6 +41,5 @@ jobs:
           PH_USER: ${{ secrets.PH_USER }}
           PH_PASSWORD: ${{ secrets.PH_PASSWORD }}
           CRON_JOB: ${{ secrets.CRON_JOB }}
-          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          TG_BOT: ${{ secrets.TG_BOT }}
         run: python ph_renew.py
