@@ -3,6 +3,10 @@ name: Pidgin-Renew
 on:
   workflow_dispatch:
 
+permissions:
+  actions: write
+  contents: read
+
 jobs:
   renew:
     runs-on: ubuntu-latest
@@ -43,3 +47,13 @@ jobs:
           CRON_JOB: ${{ secrets.CRON_JOB }}
           TG_BOT: ${{ secrets.TG_BOT }}
         run: python ph_renew.py
+
+      - name: 🧹 仅保留最近 2 条运行记录
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ids=$(gh run list --repo "${{ github.repository }}" --workflow pidgin-renew.yml --limit 100 --json databaseId --jq '.[].databaseId')
+          echo "$ids" | tail -n +3 | while read -r id; do
+            [ -n "$id" ] && gh run delete "$id" --repo "${{ github.repository }}" && echo "已删除 run $id"
+          done
